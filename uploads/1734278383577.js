@@ -4,15 +4,9 @@ require('dotenv').config()
 
 var app = express();
 
-const fs = require('fs');
 
-if (!fs.existsSync('./uploads')) {
-  fs.mkdirSync('./uploads');
-}
-
-const path = require('path'); 
 const multer = require('multer');
-//const { path } = require('express/lib/application');
+const { path } = require('express/lib/application');
 const storage = multer.diskStorage({
   destination: (req, file, cb)=>{
     cb(null, 'uploads/');
@@ -30,14 +24,13 @@ app.get('/', function (req, res) {
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-app.post('/api/fileanalyse', upload.single('upfile'), (req, res)=>{
-  console.log(req.file);
+app.post('/api/fileanalyse', upload.single('file'), (req, res)=>{
   const uploadedFile = req.file;
   if(!uploadedFile) return res.status(400).send('No file uploaded.');
   res.send({
-    name: uploadedFile.originalname,
-    type: uploadedFile.mimetype,
-    size: uploadedFile.size,
+    fileName: uploadedFile.originalname,
+    fileType: uploadedFile.mimetype,
+    fileSize: uploadedFile.size,
   });
 });
 
